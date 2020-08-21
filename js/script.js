@@ -6,7 +6,7 @@ const otherTitle = document.getElementById('other-title').hidden = true;
 const selectShirt = document.createElement('OPTION');   
 selectShirt.value = 'theme';
 selectShirt.textContent = 'Please select a T-shirt theme.';
-selectShirt.setAttribute('selected', true);
+selectShirt.selected = true;
 
 const color = document.getElementById('color');
 const option1 = document.querySelector('option[value=cornflowerblue]'); 
@@ -34,6 +34,30 @@ const design = document.getElementById('design');
 design.addEventListener('change', (e) => { 
     const target = e.target.value; 
     
+    if(target === 'js puns') {
+     for(let i = 0; i < colorOptions.length; i++) {
+        const text = colorOptions[i].textContent; 
+        if (text.includes('JS Puns')) {
+            colorOptions[i].hidden = false; 
+            colorOptions[1].selected = true; 
+        } else {
+            colorOptions[i].hidden = true;
+        }
+     }
+
+    }
+
+     if(target === 'heart js') {
+        for(let i = 0; i < colorOptions.length; i++) {
+           const text = colorOptions[i].textContent; 
+           if (text.includes('I')) {
+               colorOptions[i].hidden = false; 
+               colorOptions[4].selected = true; 
+           } else {
+               colorOptions[i].hidden = true;
+           }
+        }
+     }
 });
 
 
