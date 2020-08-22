@@ -43,21 +43,59 @@ design.addEventListener('change', (e) => {
         } else {
             colorOptions[i].hidden = true;
         }
+    
      }
 
-    }
-
-     if(target === 'heart js') {
+    } else if (target === 'heart js') {
         for(let i = 0; i < colorOptions.length; i++) {
            const text = colorOptions[i].textContent; 
            if (text.includes('I')) {
                colorOptions[i].hidden = false; 
-               colorOptions[4].selected = true; 
+               colorOptions[4].selected = true;
            } else {
                colorOptions[i].hidden = true;
            }
         }
      }
+});
+
+
+/* 
+            - Activity Section -
+    1. Create an element to display the total activity cost
+    2. Listen for changes in the Activity section
+       Create helpful variables to store important values
+    3. Update and display the total activity cost
+    4. Disable conflicting activities
+
+*/ 
+
+// 1. Create a DOM element to display the total cost and 
+//    create the global variable to store the total activity cost 
+const activity = document.querySelector('.activities');
+const pCost = document.createElement('p');
+activity.appendChild(pCost);
+let totalCost = 0; 
+
+
+// 2. Listen for changes in the Activity section
+activity.addEventListener('change', (e) => {
+    const checkbox = e.target; 
+
+    // 3. Update and display the total activity cost
+    //    First, convert the 'data-cost' value into a number data type
+    const data_cost_string = checkbox.getAttribute('data-cost');
+    const data_cost_number = parseInt(data_cost_string);
+    
+    if(checkbox.checked){
+        totalCost += data_cost_number; 
+    } else {
+        totalCost -= data_cost_number;
+    }
+
+    pCost.textContent = `Total: $${totalCost}`;
+
+    // 4. Disable conflicting activities
 });
 
 
@@ -71,32 +109,3 @@ design.addEventListener('change', (e) => {
 
 
 
-
-
-
-
-
-
-
-// const target = e.target.value; 
-// if(target === 'js puns'){
-//     if(option.includes('JS Puns')){
-//         for(let i = 4; i < colorOptions.length; i++){
-//             colorOptions[i].hidden = false;
-//             colorOptions[i].hidden = true;             
-//         }
-//         colorOptions[1].setAttribute('selected', true);
-//     }
-    
-
-// }  else if (target === 'heart js') {
-
-//      if(option.includes('I')){
-        
-//         for(let j = 1; j < 4; j++){
-//             colorOptions[i].hidden = false; 
-//             colorOptions[j].hidden = true;              
-//         }
-//             colorOptions[4].setAttribute('selected', true);
-//         }
-//     }
