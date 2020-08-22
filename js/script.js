@@ -80,22 +80,33 @@ let totalCost = 0;
 
 // 2. Listen for changes in the Activity section
 activity.addEventListener('change', (e) => {
-    const checkbox = e.target; 
+    const clicked = e.target; 
 
     // 3. Update and display the total activity cost
     //    First, convert the 'data-cost' value into a number data type
-    const data_cost_string = checkbox.getAttribute('data-cost');
-    const data_cost_number = parseInt(data_cost_string);
+    const clicked_type_string = clicked.getAttribute('data-cost');
+    const clicked_type_number = parseInt(clicked_type_string);
     
-    if(checkbox.checked){
-        totalCost += data_cost_number; 
+    if(clicked.checked){
+        totalCost += clicked_type_number; 
     } else {
-        totalCost -= data_cost_number;
+        totalCost -= clicked_type_number;
     }
 
     pCost.textContent = `Total: $${totalCost}`;
 
     // 4. Disable conflicting activities
+    const allCheckboxes = document.querySelectorAll('.activities input');
+    const day_time_value = clicked.getAttribute('data-day-and-time');
+
+    for(let i = 0; i < allCheckboxes.length; i++){
+        const currentCBValue = allCheckboxes[i].getAttribute('data-day-and-time');
+        
+        if(day_time_value === currentCBValue && clicked !== allCheckboxes[i]){
+
+        }
+    }
+    
 });
 
 
