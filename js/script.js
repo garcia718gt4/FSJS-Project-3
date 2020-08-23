@@ -39,7 +39,7 @@ const design = document.getElementById('design');
 
 design.addEventListener('change', (e) => { 
     const target = e.target.value; 
-    
+
     if(target === 'js puns') {
      for(let i = 0; i < colorOptions.length; i++) {
         const text = colorOptions[i].textContent; 
@@ -121,12 +121,83 @@ activity.addEventListener('change', (e) => {
 
 
 /*
-    PAYMENT SECTION 
+    - PAYMENT SECTION -
+    The user should be able to change payment options at any time, 
+    but shouldn’t be able to select the “Select Payment Method” option.
+    Check the currently selected payment option, 
+    and hide and show the payment sections in the form accordingly.
 */
 
+// Hide the “Select Payment Method” `option` so it doesn’t show up in the drop-down menu.
+const payment_section = document.getElementById('payment');
+const payment_options = document.querySelectorAll('#payment option'); 
+payment_options[0].hidden = true; 
+
+payment_section.addEventListener('change', (e) => {   
+    const type_of_payment = e.target.value;
+
+    const credit_card = document.getElementById('credit-card');
+    const pay_pal = document.getElementById('paypal');
+    const bitcoin = document.getElementById('bitcoin');
+
+    for (let i = 0; i < payment_options.length; i++) {
+        // Get the value of the payment select element, and if it’s equal to ‘credit card’, 
+        // set the credit card payment section in the form to show, and set the other two options to hide.
+        if(type_of_payment === 'credit card') {
+            credit_card.hidden = false;
+            pay_pal.hidden = true; 
+            bitcoin.hidden = true; 
+        } else if(type_of_payment === 'paypal') {
+            credit_card.hidden = true;
+            pay_pal.hidden = false; 
+            bitcoin.hidden = true; 
+        } else if(type_of_payment === 'bitcoin') {
+            credit_card.hidden = true;
+            pay_pal.hidden = true; 
+            bitcoin.hidden = false; 
+        }
+        
+    }
 
 
+    // // A refactor approach - does not work b/c 
+    // // the property 'creditcard' does not match the two-word value
+    // // 'credit card' in the option
+    // // i.e, A property CANNOT be two words with a space
+    // const credit_card = document.getElementById('credit-card');
+    // const pay_pal = document.getElementById('paypal');
+    // const bitcoin = document.getElementById('bitcoin');
 
+    // // An object with 3 properties whose values are arrow functions
+    // const payments = {
+    //     creditcard: () => {
+    //         credit_card.hidden = false;
+    //         pay_pal.hidden = true; 
+    //         bitcoin.hidden = true; 
+    //     },
+    //     paypal: () => {  
+    //         credit_card.hidden = true; 
+    //         bitcoin.hidden = true; 
+    //         pay_pal.hidden = false;
+    //     },
+    //     bitcoin: () => {
+    //         credit_card.hidden = true; 
+    //         pay_pal.hidden = true; 
+    //         bitcoin.hidden = false;
+    //     }
+    // };
+    
+    // // run payment based on type
+    // payments[type_of_payment](); 
+
+
+});
+
+
+/*
+    - FORM VALIDATION AND VALIDATION MESSAGES SECTION -
+  
+*/
 
 
 
