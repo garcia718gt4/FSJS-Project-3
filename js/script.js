@@ -1,17 +1,23 @@
 const name = document.getElementById('name').focus();
 const otherTitle = document.getElementById('other-title').hidden = true;
 
+/*
+    - T-SHIRT SECTION -
+    Goal is to filter the available "Color" options by the selected theme in the "Design" field.
+    Doing this ensures that the user cannot select an invalid combination of values
+    for the "Design" and "Color" fields.
+*/
 
-// Update the “Color” field to read “Please select a T-shirt theme”.
+// Create a new option element to read “Please select a T-shirt theme”.
 const selectShirt = document.createElement('OPTION');   
 selectShirt.value = 'theme';
 selectShirt.textContent = 'Please select a T-shirt theme.';
 selectShirt.selected = true;
 
+// Append the new option to the 'Color' field 
 const color = document.getElementById('color');
 const option1 = document.querySelector('option[value=cornflowerblue]'); 
 color.insertBefore(selectShirt, option1);
-
 
 // Hide the colors in the “Color” drop-down menu.
 const colorOptions = color.querySelectorAll('#color option'); 
@@ -21,7 +27,7 @@ const colorOptions = color.querySelectorAll('#color option');
         }
     }
 
-/* When one of the two themes is selected, 
+/*  When one of the two themes is selected, 
     only the appropriate colors should show in the “Color” drop-down menu, 
     and the “Color” field should update to the first available color. 
     Use a `change` event listener on the “Design” menu `select` element
@@ -61,7 +67,7 @@ design.addEventListener('change', (e) => {
 
 
 /* 
-            - Activity Section -
+            - ACTIVITY SECTION -
     1. Create an element to display the total activity cost
     2. Listen for changes in the Activity section
        Create helpful variables to store important values
@@ -96,19 +102,27 @@ activity.addEventListener('change', (e) => {
     pCost.textContent = `Total: $${totalCost}`;
 
     // 4. Disable conflicting activities
-    const allCheckboxes = document.querySelectorAll('.activities input');
+    const checkboxes = document.querySelectorAll('.activities input');
     const day_time_value = clicked.getAttribute('data-day-and-time');
 
-    for(let i = 0; i < allCheckboxes.length; i++){
-        const currentCBValue = allCheckboxes[i].getAttribute('data-day-and-time');
+    for(let i = 0; i < checkboxes.length; i++){
+        const currentCBValue = checkboxes[i].getAttribute('data-day-and-time');
         
-        if(day_time_value === currentCBValue && clicked !== allCheckboxes[i]){
-
+        if(day_time_value === currentCBValue && clicked !== checkboxes[i]){
+            if(clicked.checked) {
+                checkboxes[i].disabled = true; 
+            } else {
+                checkboxes[i].disabled = false; 
+            }
         }
     }
     
 });
 
+
+/*
+    PAYMENT SECTION 
+*/
 
 
 
