@@ -1,5 +1,29 @@
-const name = document.getElementById('name').focus();
-const otherTitle = document.getElementById('other-title').hidden = true;
+// Store a reference to the name input
+const name = document.getElementById('name');
+name.focus();
+
+// Under the job role, store a reference to the select drop-down element 
+const title = document.getElementById('title');
+const titleOptions = document.querySelectorAll('#title option'); // a static list of the options 
+
+// Store a reference to the 'other-title' input
+const otherTitle = document.getElementById('other-title');
+otherTitle.style.display = 'none'; // hide the element when page loads
+
+// toggle the 'otherTitle' to show/hide when selected 
+title.addEventListener('change', (e) => {
+    const other = e.target.value;
+
+    for (let i = 0; i < titleOptions.length; i++){
+        if(other === 'other'){
+            otherTitle.style.display = 'inline';
+        } else {
+            otherTitle.style.display = 'none';
+        }
+    }
+});
+
+
 
 /*
     - T-SHIRT SECTION -
@@ -147,6 +171,9 @@ payment_section.addEventListener('change', (e) => {
             credit_card.hidden = false;
             pay_pal.hidden = true; 
             bitcoin.hidden = true; 
+            // VALIDATE HERE ???
+
+
         } else if(type_of_payment === 'paypal') {
             credit_card.hidden = true;
             pay_pal.hidden = false; 
@@ -198,10 +225,67 @@ payment_section.addEventListener('change', (e) => {
     - FORM VALIDATION AND VALIDATION MESSAGES SECTION -
   
 */
+const form = document.getElementsByTagName('form')[0];
+const email = document.getElementById('mail');
+
+
+/* Helper function to validate name input */
+const nameValidator = () => {
+    const name_value = name.value;
+
+    const span_msg = document.createElement('span');
+    span_msg.textContent = ' Please enter a name';
+    span_msg.style.color = '#cc0000';
+    span_msg.hidden = true;
+
+
+    const name_label = name.previousElementSibling;
+    name_label.appendChild(span_msg);
+
+    if(name_value.length > 0){
+        name.style.borderColor = 'white';  
+        return true; 
+      } else {       
+        name.style.borderColor = '#cc0000';
+        span_msg.hidden = false;    
+        return false; 
+      }
+}
+
+
+/* Helper function to validate email input */
+
+const emailValidator = () => {
+    const email_value = email.value;
+    console.log(email_value);
+
+    if ( /^[^@]+@[^@.]+\.[a-z]+$/i.test(email_value) ) {
+        email.style.borderColor = 'white';
+        return true;
+    } else {
+        email.style.borderColor = '#cc0000';
+        return false;
+    }
+}
 
 
 
+/* Real time validation */
+// To add real time validation, use the .addEventListener() method on the form elements/sections
+// Use events like `keyup`, `blur` and/or `mouseout`
+// As the callback, use the validation functions above
 
+name.addEventListener('blur', () => {
+    nameValidator();
+});
 
+// email.addEventListener('blur', () => {
+//     emailValidator();
+// });
 
-
+/* Submit listener on the form element */
+form.addEventListener('submit', (e) => {
+    
+    
+    
+});
