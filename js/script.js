@@ -172,6 +172,7 @@ payment_section.addEventListener('change', (e) => {
             credit_card.hidden = false;
             pay_pal.hidden = true; 
             bitcoin.hidden = true; 
+            ccnValidator();
         } else if(type_of_payment === 'paypal') {
             credit_card.hidden = true;
             pay_pal.hidden = false; 
@@ -304,18 +305,18 @@ const exp_year = document.getElementById('exp-year');
 
 // Helper function to validate the credit card section if selected
 function ccnValidator() {
-    if(type_of_payment === 'credit card') {
-        const cc_num_value = cc_num.value; 
 
-        if ( /^\d{13, 16}$/.text(cc_num_value) ) {
-            cc_num.style.borderColor = 'white';
-            return true;
-        } else {
-            cc_num.style.borderColor = '#cc0000';
-            return false;
-        }
-    
+    const cc_num_value = cc_num.value; 
+
+    if ( /^\d{13, 16}$/.test(cc_num_value) ) {
+        cc_num.style.borderColor = 'white';
+        return true;
+    } else {
+        cc_num.style.borderColor = '#cc0000';
+        return false;
     }
+    
+    
 }
        
 
