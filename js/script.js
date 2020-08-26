@@ -1,5 +1,5 @@
 // Store a reference to the name input
-const name = document.getElementById('name');
+const name = document.getElementById('name'); 
 name.focus();
 
 // Under the job role, store a reference to the select drop-down element 
@@ -103,6 +103,7 @@ design.addEventListener('change', (e) => {
 // 1. Create a DOM element to display the total cost and 
 //    create the global variable to store the total activity cost 
 const activity = document.querySelector('.activities');
+
 const pCost = document.createElement('p');
 activity.appendChild(pCost);
 let totalCost = 0; 
@@ -171,9 +172,6 @@ payment_section.addEventListener('change', (e) => {
             credit_card.hidden = false;
             pay_pal.hidden = true; 
             bitcoin.hidden = true; 
-            // VALIDATE HERE ???
-
-
         } else if(type_of_payment === 'paypal') {
             credit_card.hidden = true;
             pay_pal.hidden = false; 
@@ -222,51 +220,104 @@ payment_section.addEventListener('change', (e) => {
 
 
 /*
-    - FORM VALIDATION AND VALIDATION MESSAGES SECTION -
-  
+    --- FORM MESSAGES AND VALIDATION FUNCTIONS SECTION ---
+    1. NAME  
+    2. EMAIL 
+    3. ACTIVITIES 
 */
-const form = document.getElementsByTagName('form')[0];
-const email = document.getElementById('mail');
 
+// 1.   Create and append a span element when name input is invalid
+const name_msg = document.createElement('span');
+name_msg.textContent = ' Please enter a name';
+name_msg.style.color = '#cc0000';
+name_msg.hidden = true;
+const name_label = name.previousElementSibling;
+name_label.appendChild(name_msg);
 
-/* Helper function to validate name input */
+// Helper function to validate name input 
 const nameValidator = () => {
     const name_value = name.value;
-
-    const span_msg = document.createElement('span');
-    span_msg.textContent = ' Please enter a name';
-    span_msg.style.color = '#cc0000';
-    span_msg.hidden = true;
-
-
-    const name_label = name.previousElementSibling;
-    name_label.appendChild(span_msg);
-
+    
     if(name_value.length > 0){
-        name.style.borderColor = 'white';  
+        name.style.borderColor = 'white';
+        name_msg.hidden = true; 
         return true; 
-      } else {       
-        name.style.borderColor = '#cc0000';
-        span_msg.hidden = false;    
+    } else {         
+        name.style.borderColor = '#cc0000'; 
+        name_msg.hidden = false;  
         return false; 
-      }
+    }
 }
 
 
-/* Helper function to validate email input */
+// 2.   Create and append a span element when the email input is invalid
+const email = document.getElementById('mail'); // store a reference to the email input
 
+const email_msg = document.createElement('span');
+email_msg.textContent = ' Please enter a valid email';
+email_msg.style.color = '#cc0000';
+email_msg.hidden = true;
+const email_label = email.previousElementSibling;
+email_label.appendChild(email_msg);
+
+//  Helper function to validate email input 
 const emailValidator = () => {
     const email_value = email.value;
-    console.log(email_value);
 
     if ( /^[^@]+@[^@.]+\.[a-z]+$/i.test(email_value) ) {
         email.style.borderColor = 'white';
+        email_msg.hidden = true;
         return true;
     } else {
         email.style.borderColor = '#cc0000';
+        email_msg.hidden = false;
         return false;
     }
 }
+
+
+const activity_msg = document.createElement('span');
+activity_msg.textContent = ' Please select at least one activity';
+activity_msg.style.color = '#cc0000';
+activity_msg.hidden = true;
+const activity_legend = activity.firstElementChild;
+activity_legend.appendChild(activity_msg);
+
+
+// Helper function to validate the activities section 
+const activitiesValidator = () => {
+    if (totalCost > 0) {
+        activity_msg.hidden = true; 
+        return true; 
+    } else {
+        activity_msg.hidden = false; 
+        return false; 
+    }   
+}
+
+// 4.   VALIDATE CREDIT CARD
+const cc_num = document.getElementById('cc-num');
+const zip = document.getElementById('zip');
+const cvv = document.getElementById('cvv');
+const exp_month = document.getElementById('exp-month');
+const exp_year = document.getElementById('exp-year');
+
+// Helper function to validate the credit card section if selected
+function ccnValidator() {
+    if(type_of_payment === 'credit card') {
+        const cc_num_value = cc_num.value; 
+
+        if ( /^\d{13, 16}$/.text(cc_num_value) ) {
+            cc_num.style.borderColor = 'white';
+            return true;
+        } else {
+            cc_num.style.borderColor = '#cc0000';
+            return false;
+        }
+    
+    }
+}
+       
 
 
 
@@ -277,15 +328,35 @@ const emailValidator = () => {
 
 name.addEventListener('blur', () => {
     nameValidator();
+    
+});
+  
+email.addEventListener('blur', () => {
+    emailValidator();
 });
 
-// email.addEventListener('blur', () => {
-//     emailValidator();
-// });
+activity.addEventListener('blur', () => {
+    activitiesValidator();
+});
+
+cc_num.addEventListener('blur', () => {
+    ccnValidator();
+})
 
 /* Submit listener on the form element */
+const form = document.querySelector('form');  // Store a reference to the form input 
 form.addEventListener('submit', (e) => {
     
-    
+    if(!nameValidator()) {
+        e.preventDefault();
+    } 
+        
+    if(!emailValidator()) {
+        e.preventDefault();
+    } 
+
+    if(!activitiesValidator()){
+        e.preventDefault();
+    }
     
 });
