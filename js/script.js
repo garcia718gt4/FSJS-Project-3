@@ -32,6 +32,8 @@ title.addEventListener('change', (e) => {
     for the "Design" and "Color" fields.
 */
 
+
+
 // Create a new option element to read “Please select a T-shirt theme”.
 const selectShirt = document.createElement('OPTION');   
 selectShirt.value = 'theme';
@@ -44,12 +46,13 @@ const option1 = document.querySelector('option[value=cornflowerblue]');
 color.insertBefore(selectShirt, option1);
 
 // Hide the colors in the “Color” drop-down menu.
-const colorOptions = color.querySelectorAll('#color option'); 
+const colorOptions = color.querySelectorAll('#color option'); // get a reference to the node list of option
     for(let i = 0; i < colorOptions.length; i++){
         if (i != 0) {
             colorOptions[i].hidden = true; 
         }
     }
+ 
 
 /*  When one of the two themes is selected, 
     only the appropriate colors should show in the “Color” drop-down menu, 
@@ -61,17 +64,22 @@ const colorOptions = color.querySelectorAll('#color option');
 
 const design = document.getElementById('design');
 
+
 design.addEventListener('change', (e) => { 
     const target = e.target.value; 
+    const select_theme = design.firstElementChild; 
 
     if(target === 'js puns') {
      for(let i = 0; i < colorOptions.length; i++) {
         const text = colorOptions[i].textContent; 
+        
         if (text.includes('JS Puns')) {
             colorOptions[i].hidden = false; 
             colorOptions[1].selected = true; 
+            select_theme.hidden = true; 
         } else {
             colorOptions[i].hidden = true;
+            select_theme.hidden = true; 
         }
     
      }
@@ -82,8 +90,10 @@ design.addEventListener('change', (e) => {
            if (text.includes('I')) {
                colorOptions[i].hidden = false; 
                colorOptions[4].selected = true;
+               select_theme.hidden = true;
            } else {
                colorOptions[i].hidden = true;
+               select_theme.hidden = true;
            }
         }
      }
@@ -172,7 +182,10 @@ payment_section.addEventListener('change', (e) => {
             credit_card.hidden = false;
             pay_pal.hidden = true; 
             bitcoin.hidden = true; 
-            ccnValidator();
+                // Validate the credit card information 
+                ccnValidator();
+                zipcodeValidator();
+                cvvValidator();
         } else if(type_of_payment === 'paypal') {
             credit_card.hidden = true;
             pay_pal.hidden = false; 
@@ -225,9 +238,13 @@ payment_section.addEventListener('change', (e) => {
     1. NAME  
     2. EMAIL 
     3. ACTIVITIES 
+    4. Credit Card
+        a. card number
+        b. zip code
+        c. security(cvv) number 
 */
 
-// 1.   Create and append a span element when name input is invalid
+// 1.   Create and append a span element when 'name' input is invalid
 const name_msg = document.createElement('span');
 name_msg.textContent = ' Please enter a name';
 name_msg.style.color = '#cc0000';
@@ -235,25 +252,26 @@ name_msg.hidden = true;
 const name_label = name.previousElementSibling;
 name_label.appendChild(name_msg);
 
-// Helper function to validate name input 
-const nameValidator = () => {
-    const name_value = name.value;
-    
-    if(name_value.length > 0){
-        name.style.borderColor = 'white';
-        name_msg.hidden = true; 
-        return true; 
-    } else {         
-        name.style.borderColor = '#cc0000'; 
-        name_msg.hidden = false;  
-        return false; 
+    // Helper function to validate name input 
+    const nameValidator = () => {
+        const name_value = name.value;
+
+        if(name_value.length > 0){
+            name.style.borderColor = 'white';
+            name_msg.hidden = true; 
+            return true; 
+        } else {         
+            name.style.borderColor = '#cc0000'; 
+            name_msg.hidden = false;  
+            return false; 
+        }
     }
-}
 
 
-// 2.   Create and append a span element when the email input is invalid
+
+
+// 2.   Create and append a span element when the 'email' input is invalid
 const email = document.getElementById('mail'); // store a reference to the email input
-
 const email_msg = document.createElement('span');
 email_msg.textContent = ' Please enter a valid email';
 email_msg.style.color = '#cc0000';
@@ -261,22 +279,22 @@ email_msg.hidden = true;
 const email_label = email.previousElementSibling;
 email_label.appendChild(email_msg);
 
-//  Helper function to validate email input 
-const emailValidator = () => {
-    const email_value = email.value;
+    //  Helper function to validate 'email' input 
+    const emailValidator = () => {
+        const email_value = email.value;
 
-    if ( /^[^@]+@[^@.]+\.[a-z]+$/i.test(email_value) ) {
-        email.style.borderColor = 'white';
-        email_msg.hidden = true;
-        return true;
-    } else {
-        email.style.borderColor = '#cc0000';
-        email_msg.hidden = false;
-        return false;
+        if ( /^[^@]+@[^@.]+\.[a-z]+$/i.test(email_value) ) {
+            email.style.borderColor = 'white';
+            email_msg.hidden = true;
+            return true;
+        } else {
+            email.style.borderColor = '#cc0000';
+            email_msg.hidden = false;
+            return false;
+        }
     }
-}
 
-
+// 3.   Create and append a span element when the 'activity' input is invalid
 const activity_msg = document.createElement('span');
 activity_msg.textContent = ' Please select at least one activity';
 activity_msg.style.color = '#cc0000';
@@ -284,42 +302,99 @@ activity_msg.hidden = true;
 const activity_legend = activity.firstElementChild;
 activity_legend.appendChild(activity_msg);
 
+    // Helper function to validate the activities section 
+    const activitiesValidator = () => {
+        if (totalCost > 0) {
+            activity_msg.hidden = true; 
+            return true; 
+        } else {
+            activity_msg.hidden = false; 
+            return false; 
+        }   
+    }
 
-// Helper function to validate the activities section 
-const activitiesValidator = () => {
-    if (totalCost > 0) {
-        activity_msg.hidden = true; 
-        return true; 
-    } else {
-        activity_msg.hidden = false; 
-        return false; 
-    }   
-}
 
-// 4.   VALIDATE CREDIT CARD
+
+// 4.   VALIDATE CREDIT CARD NUMBER (if selected)
+
+// Store a reference to each input element used for the card information 
 const cc_num = document.getElementById('cc-num');
 const zip = document.getElementById('zip');
 const cvv = document.getElementById('cvv');
 const exp_month = document.getElementById('exp-month');
 const exp_year = document.getElementById('exp-year');
 
-// Helper function to validate the credit card section if selected
-function ccnValidator() {
+// 4a.   Create and append a span element when the 'card number' input is invalid
+const ccn_msg = document.createElement('span');
+ccn_msg.textContent = ' 13 to 16 digits required';
+ccn_msg.style.color = '#cc0000';
+ccn_msg.hidden = true;
+const ccn_label = cc_num.previousElementSibling;
+ccn_label.appendChild(ccn_msg);
 
-    const cc_num_value = cc_num.value; 
+    // Helper function to validate the card number input 
+    /* ----- function declarations are hoisted and can be used in the above 'Payment Section' ----- */
+    function ccnValidator() {
+        const cc_num_value = cc_num.value; 
 
-    if ( /^\d{13, 16}$/.test(cc_num_value) ) {
-        cc_num.style.borderColor = 'white';
-        return true;
-    } else {
-        cc_num.style.borderColor = '#cc0000';
-        return false;
+        if ( /^\d{13,16}$/.test(cc_num_value) ) {
+            cc_num.style.borderColor = 'white';
+            ccn_msg.hidden = true; 
+            return true;
+        } else {
+            cc_num.style.borderColor = '#cc0000';
+            ccn_msg.hidden = false;
+            return false;
+        }
     }
-    
-    
-}
-       
 
+
+// 4b    Create and append a span element when the 'ZIP CODE' input is invalid
+const zipcode_msg = document.createElement('span');
+zipcode_msg.textContent = ' Invalid';
+zipcode_msg.style.color = '#cc0000';
+zipcode_msg.hidden = true;
+const zip_label = zip.previousElementSibling;
+zip_label.appendChild(zipcode_msg);
+       
+    // Helper function to validate the zip code
+    function zipcodeValidator() {
+        const zip_value = zip.value; 
+        
+        if( /^\d{5}$/.test(zip_value) ) {
+            zip.style.borderColor = 'white'; 
+            zipcode_msg.hidden = true;
+            return true;
+        } else {
+            zip.style.borderColor = '#cc0000';
+            zipcode_msg.hidden = false; 
+            return false; 
+        }
+    }
+
+
+// 4c    Create and append a span element when the 'CVV' input is invalid
+const cvv_msg = document.createElement('span');
+cvv_msg.textContent = ' Invalid';
+cvv_msg.style.color = '#cc0000';
+cvv_msg.hidden = true;
+const cvv_label = cvv.previousElementSibling;
+cvv_label.appendChild(cvv_msg);
+       
+    // Helper function to validate the CVV 
+    function cvvValidator() {
+        const cvv_value = cvv.value; 
+        
+        if( /^\d{3}$/.test(cvv_value) ) {
+            cvv.style.borderColor = 'white'; 
+            cvv_msg.hidden = true;
+            return true;
+        } else {
+            cvv.style.borderColor = '#cc0000';
+            cvv_msg.hidden = false; 
+            return false; 
+        }
+    }
 
 
 /* Real time validation */
@@ -344,6 +419,14 @@ cc_num.addEventListener('blur', () => {
     ccnValidator();
 })
 
+zip.addEventListener('blur', () => {
+    zipcodeValidator();
+})
+
+cvv.addEventListener('blur', () => {
+    cvvValidator();
+})
+
 /* Submit listener on the form element */
 const form = document.querySelector('form');  // Store a reference to the form input 
 form.addEventListener('submit', (e) => {
@@ -359,5 +442,17 @@ form.addEventListener('submit', (e) => {
     if(!activitiesValidator()){
         e.preventDefault();
     }
+
+    if(!ccnValidator()){
+        e.preventDefault();
+    }
+
+    if(!zipcodeValidator()){
+        e.preventDefault();
+    }
+
+    if(!cvvValidator()){
+        e.preventDefault();
+    }
     
-});
+}); 
