@@ -1,3 +1,5 @@
+const form = document.querySelector('form');  // Store a reference to the form input 
+
 // Store a reference to the name input
 const name = document.getElementById('name'); 
 name.focus();
@@ -162,41 +164,49 @@ activity.addEventListener('change', (e) => {
     Check the currently selected payment option, 
     and hide and show the payment sections in the form accordingly.
 */
+// Select the type of payment divs
+const credit_card = document.getElementById('credit-card');
+const pay_pal = document.getElementById('paypal');
+const bitcoin = document.getElementById('bitcoin');
+
 
 // Hide the “Select Payment Method” `option` so it doesn’t show up in the drop-down menu.
 const payment_section = document.getElementById('payment');
 const payment_options = document.querySelectorAll('#payment option'); 
 payment_options[0].hidden = true; 
 
+
+// Remove the first payment option value when page first loads. 
+const select_payment_option = payment_options[0]; 
+payment_section.removeChild(select_payment_option);
+
+
 payment_section.addEventListener('change', (e) => {   
     const type_of_payment = e.target.value;
+// Get the value of the payment select element, and if it’s equal to ‘credit card’, 
+// set the credit card payment section visible and hide the other two div elements.
 
-    const credit_card = document.getElementById('credit-card');
-    const pay_pal = document.getElementById('paypal');
-    const bitcoin = document.getElementById('bitcoin');
+    if(type_of_payment === 'credit card') {
+        credit_card.hidden = false;
+        pay_pal.hidden = true; 
+        bitcoin.hidden = true; 
+        // Validate the credit card information 
+        ccnValidator();          
+        zipcodeValidator();         
+        cvvValidator(); 
+    } else if(type_of_payment === 'paypal') {  
+        credit_card.hidden = true;
+        pay_pal.hidden = false; 
+        bitcoin.hidden = true; 
 
-    for (let i = 0; i < payment_options.length; i++) {
-        // Get the value of the payment select element, and if it’s equal to ‘credit card’, 
-        // set the credit card payment section in the form to show, and set the other two options to hide.
-        if(type_of_payment === 'credit card') {
-            credit_card.hidden = false;
-            pay_pal.hidden = true; 
-            bitcoin.hidden = true; 
-                // Validate the credit card information 
-                ccnValidator();
-                zipcodeValidator();
-                cvvValidator();
-        } else if(type_of_payment === 'paypal') {
-            credit_card.hidden = true;
-            pay_pal.hidden = false; 
-            bitcoin.hidden = true; 
-        } else if(type_of_payment === 'bitcoin') {
-            credit_card.hidden = true;
-            pay_pal.hidden = true; 
-            bitcoin.hidden = false; 
-        }
-        
+    } else if(type_of_payment === 'bitcoin') {
+        credit_card.hidden = true;
+        pay_pal.hidden = true; 
+        bitcoin.hidden = false;  
     }
+     
+});
+
 
 
     // // A refactor approach - does not work b/c 
@@ -230,7 +240,6 @@ payment_section.addEventListener('change', (e) => {
     // payments[type_of_payment](); 
 
 
-});
 
 
 /*
@@ -396,6 +405,7 @@ cvv_label.appendChild(cvv_msg);
         }
     }
 
+    
 
 /* Real time validation */
 // To add real time validation, use the .addEventListener() method on the form elements/sections
@@ -404,7 +414,6 @@ cvv_label.appendChild(cvv_msg);
 
 name.addEventListener('blur', () => {
     nameValidator();
-    
 });
   
 email.addEventListener('blur', () => {
@@ -427,8 +436,9 @@ cvv.addEventListener('blur', () => {
     cvvValidator();
 })
 
+
+
 /* Submit listener on the form element */
-const form = document.querySelector('form');  // Store a reference to the form input 
 form.addEventListener('submit', (e) => {
     
     if(!nameValidator()) {
@@ -442,17 +452,14 @@ form.addEventListener('submit', (e) => {
     if(!activitiesValidator()){
         e.preventDefault();
     }
-
-    if(!ccnValidator()){
+    if(!ccnValidator()) {
+        e.preventDefault();
+    }
+    if(!zipcodeValidator()) {
+        e.preventDefault();
+    }
+    if(!cvvValidator()) {
         e.preventDefault();
     }
 
-    if(!zipcodeValidator()){
-        e.preventDefault();
-    }
-
-    if(!cvvValidator()){
-        e.preventDefault();
-    }
-    
 }); 
