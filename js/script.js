@@ -166,8 +166,21 @@ activity.addEventListener('change', (e) => {
 */
 // Select the type of payment divs
 const credit_card = document.getElementById('credit-card');
+credit_card.hidden = false;
+
+
+// Store a reference to each input element used for the card information 
+const cc_num = document.getElementById('cc-num');
+const zip = document.getElementById('zip');
+const cvv = document.getElementById('cvv');
+const exp_month = document.getElementById('exp-month');
+const exp_year = document.getElementById('exp-year');
+
+
 const pay_pal = document.getElementById('paypal');
+pay_pal.hidden = true; 
 const bitcoin = document.getElementById('bitcoin');
+bitcoin.hidden = true;
 
 
 // Hide the “Select Payment Method” `option` so it doesn’t show up in the drop-down menu.
@@ -181,33 +194,37 @@ const select_payment_option = payment_options[0];
 payment_section.removeChild(select_payment_option);
 
 
+let select_credit_card = false; 
 payment_section.addEventListener('change', (e) => {   
-    const type_of_payment = e.target.value;
-// Get the value of the payment select element, and if it’s equal to ‘credit card’, 
-// set the credit card payment section visible and hide the other two div elements.
+     const type_of_payment = e.target.value;
 
     if(type_of_payment === 'credit card') {
+        select_credit_card = true; 
         credit_card.hidden = false;
         pay_pal.hidden = true; 
         bitcoin.hidden = true; 
-        // Validate the credit card information 
-        ccnValidator();          
+        ccnValidator();       // Validate the credit card information 
         zipcodeValidator();         
         cvvValidator(); 
-    } else if(type_of_payment === 'paypal') {  
+    } 
+    if(type_of_payment === 'paypal') {  
         credit_card.hidden = true;
         pay_pal.hidden = false; 
         bitcoin.hidden = true; 
-
-    } else if(type_of_payment === 'bitcoin') {
+        select_credit_card = false; 
+    }  
+    
+    if(type_of_payment === "bitcoin") {
         credit_card.hidden = true;
         pay_pal.hidden = true; 
         bitcoin.hidden = false;  
+        select_credit_card = false;
     }
-     
+
 });
 
 
+ 
 
     // // A refactor approach - does not work b/c 
     // // the property 'creditcard' does not match the two-word value
@@ -326,14 +343,7 @@ activity_legend.appendChild(activity_msg);
 
 // 4.   VALIDATE CREDIT CARD NUMBER (if selected)
 
-// Store a reference to each input element used for the card information 
-const cc_num = document.getElementById('cc-num');
-const zip = document.getElementById('zip');
-const cvv = document.getElementById('cvv');
-const exp_month = document.getElementById('exp-month');
-const exp_year = document.getElementById('exp-year');
-
-// 4a.   Create and append a span element when the 'card number' input is invalid
+// a.   Create and append a span element when the 'card number' input is invalid
 const ccn_msg = document.createElement('span');
 ccn_msg.textContent = ' 13 to 16 digits required';
 ccn_msg.style.color = '#cc0000';
@@ -358,7 +368,7 @@ ccn_label.appendChild(ccn_msg);
     }
 
 
-// 4b    Create and append a span element when the 'ZIP CODE' input is invalid
+// b.    Create and append a span element when the 'ZIP CODE' input is invalid
 const zipcode_msg = document.createElement('span');
 zipcode_msg.textContent = ' Invalid';
 zipcode_msg.style.color = '#cc0000';
@@ -382,7 +392,7 @@ zip_label.appendChild(zipcode_msg);
     }
 
 
-// 4c    Create and append a span element when the 'CVV' input is invalid
+// c.    Create and append a span element when the 'CVV' input is invalid
 const cvv_msg = document.createElement('span');
 cvv_msg.textContent = ' Invalid';
 cvv_msg.style.color = '#cc0000';
@@ -452,14 +462,19 @@ form.addEventListener('submit', (e) => {
     if(!activitiesValidator()){
         e.preventDefault();
     }
-    if(!ccnValidator()) {
-        e.preventDefault();
+    if (select_credit_card){
+        if(!ccnValidator()) {
+            e.preventDefault();
+        }
     }
-    if(!zipcodeValidator()) {
-        e.preventDefault();
+    if(select_credit_card){ 
+        if(!zipcodeValidator()){
+            e.preventDefault();
+        }
     }
-    if(!cvvValidator()) {
-        e.preventDefault();
-    }
-
+    if(select_credit_card){
+        if(!cvvValidator()){
+            e.preventDefault();
+        } 
+    }   
 }); 
