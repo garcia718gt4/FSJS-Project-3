@@ -186,42 +186,43 @@ bitcoin.hidden = true;
 // Hide the “Select Payment Method” `option` so it doesn’t show up in the drop-down menu.
 const payment_section = document.getElementById('payment');
 const payment_options = document.querySelectorAll('#payment option'); 
-payment_options[0].hidden = true; 
 
 
 // Remove the first payment option value when page first loads. 
 const select_payment_option = payment_options[0]; 
-payment_section.removeChild(select_payment_option);
-
+const creditOption = payment_options[1];
+select_payment_option.disabled = true;
+// select_payment_option.selected = false;
+creditOption.selected = false;
 
 let select_credit_card = false; 
+
 payment_section.addEventListener('change', (e) => {   
      const type_of_payment = e.target.value;
-
+    
     if(type_of_payment === 'credit card') {
-        select_credit_card = true; 
+        select_credit_card = true;
         credit_card.hidden = false;
         pay_pal.hidden = true; 
         bitcoin.hidden = true; 
-        ccnValidator();       // Validate the credit card information 
-        zipcodeValidator();         
-        cvvValidator(); 
     } 
     if(type_of_payment === 'paypal') {  
+        select_credit_card = false; 
         credit_card.hidden = true;
         pay_pal.hidden = false; 
         bitcoin.hidden = true; 
-        select_credit_card = false; 
     }  
     
     if(type_of_payment === "bitcoin") {
+        select_credit_card = false; 
         credit_card.hidden = true;
         pay_pal.hidden = true; 
         bitcoin.hidden = false;  
-        select_credit_card = false;
+    
     }
 
 });
+
 
 
  
@@ -462,19 +463,12 @@ form.addEventListener('submit', (e) => {
     if(!activitiesValidator()){
         e.preventDefault();
     }
-    if (select_credit_card){
-        if(!ccnValidator()) {
+    
+    if(select_credit_card) { 
+        if(!ccnValidator() || !zipcodeValidator() || !cvvValidator()){
             e.preventDefault();
         }
-    }
-    if(select_credit_card){ 
-        if(!zipcodeValidator()){
-            e.preventDefault();
-        }
-    }
-    if(select_credit_card){
-        if(!cvvValidator()){
-            e.preventDefault();
-        } 
-    }   
+    } 
+    
+   
 }); 
