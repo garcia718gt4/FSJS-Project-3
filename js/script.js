@@ -206,6 +206,7 @@ payment_section.addEventListener('change', (e) => {
         pay_pal.hidden = true; 
         bitcoin.hidden = true; 
     } 
+
     if(type_of_payment === 'paypal') {  
         select_credit_card = false; 
         credit_card.hidden = true;
