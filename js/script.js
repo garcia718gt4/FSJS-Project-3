@@ -190,36 +190,37 @@ const payment_options = document.querySelectorAll('#payment option');
 
 // Remove the first payment option value when page first loads. 
 const select_payment_option = payment_options[0]; 
-const creditOption = payment_options[1];
-select_payment_option.disabled = true;
-// select_payment_option.selected = false;
-creditOption.selected = false;
+select_payment_option.disabled = true; 
+select_payment_option.selected = false; 
 
-let select_credit_card = false; 
+
+
+let credit_card_payment = true; 
 
 payment_section.addEventListener('change', (e) => {   
      const type_of_payment = e.target.value;
     
-    if(type_of_payment === 'credit card') {
-        select_credit_card = true;
-        credit_card.hidden = false;
-        pay_pal.hidden = true; 
-        bitcoin.hidden = true; 
-    } 
-
-    if(type_of_payment === 'paypal') {  
-        select_credit_card = false; 
+    if (type_of_payment === 'paypal') {  
+        credit_card_payment= false; 
         credit_card.hidden = true;
         pay_pal.hidden = false; 
         bitcoin.hidden = true; 
-    }  
-    
-    if(type_of_payment === "bitcoin") {
-        select_credit_card = false; 
+        
+    } 
+
+    if (type_of_payment === "bitcoin") {
+        credit_card_payment= false; 
         credit_card.hidden = true;
         pay_pal.hidden = true; 
         bitcoin.hidden = false;  
     
+    } 
+
+    if (type_of_payment === 'credit card') { 
+        credit_card_payment= true;
+        credit_card.hidden = false;
+        pay_pal.hidden = true; 
+        bitcoin.hidden = true;
     }
 
 });
@@ -343,6 +344,7 @@ activity_legend.appendChild(activity_msg);
 
 
 
+
 // 4.   VALIDATE CREDIT CARD NUMBER (if selected)
 
 // a.   Create and append a span element when the 'card number' input is invalid
@@ -378,7 +380,7 @@ zipcode_msg.hidden = true;
 const zip_label = zip.previousElementSibling;
 zip_label.appendChild(zipcode_msg);
        
-    // Helper function to validate the zip code
+    //Helper function to validate the zip code
     function zipcodeValidator() {
         const zip_value = zip.value; 
         
@@ -402,7 +404,7 @@ cvv_msg.hidden = true;
 const cvv_label = cvv.previousElementSibling;
 cvv_label.appendChild(cvv_msg);
        
-    // Helper function to validate the CVV 
+    //Helper function to validate the CVV 
     function cvvValidator() {
         const cvv_value = cvv.value; 
         
@@ -416,8 +418,17 @@ cvv_label.appendChild(cvv_msg);
             return false; 
         }
     }
+       
+    function paymentInfoValidator() {
+        if (credit_card_payment) {
+            ccnValidator();
+            zipcodeValidator();
+            cvvValidator();
+        } else {
+            return false; 
+        }
+    }
 
-    
 
 /* Real time validation */
 // To add real time validation, use the .addEventListener() method on the form elements/sections
@@ -450,6 +461,8 @@ cvv.addEventListener('blur', () => {
 
 
 
+
+
 /* Submit listener on the form element */
 form.addEventListener('submit', (e) => {
     
@@ -464,12 +477,23 @@ form.addEventListener('submit', (e) => {
     if(!activitiesValidator()){
         e.preventDefault();
     }
-    
-    if(select_credit_card) { 
-        if(!ccnValidator() || !zipcodeValidator() || !cvvValidator()){
-            e.preventDefault();
+
+    if(credit_card_payment){
+       if(!ccnValidator()){
+        e.preventDefault();
+       }
+    }
+
+    if(credit_card_payment){
+        if(!zipcodeValidator()){
+         e.preventDefault();
         }
-    } 
-    
+     }
+     if(credit_card_payment){
+        if(!cvvValidator()){
+         e.preventDefault();
+        }
+     }
+
    
 }); 
